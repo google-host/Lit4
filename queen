@@ -1,0 +1,90 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// Function to print the solution matrix
+void printSolution(vector<vector<int>> &board, int N) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            cout << board[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+// Function to check if a queen can be placed at board[row][col]
+bool isSafe(vector<vector<int>> &board, int row, int col, int N) {
+    int i, j;
+
+    // Check column above
+    for (i = 0; i < row; i++)
+        if (board[i][col])
+            return false;
+
+    // Check upper left diagonal
+    for (i = row, j = col; i >= 0 && j >= 0; i--, j--)
+        if (board[i][j])
+            return false;
+
+    // Check upper right diagonal
+    for (i = row, j = col; i >= 0 && j < N; i--, j++)
+        if (board[i][j])
+            return false;
+
+    return true;
+}
+
+// Recursive function to solve the N-Queen problem
+bool solveNQ(vector<vector<int>> &board, int row, int N) {
+    // Base case: all queens placed
+    if (row >= N)
+        return true;
+
+    // Try all columns in current row
+    for (int col = 0; col < N; col++) {
+        if (isSafe(board, row, col, N)) {
+            board[row][col] = 1;  // Place queen
+
+            // Recur for next row
+            if (solveNQ(board, row + 1, N))
+                return true;
+
+            // Backtrack
+            board[row][col] = 0;
+        }
+    }
+    return false;
+}
+
+int main() {
+    int N;
+    cout << "Enter the size of the chessboard (N): ";
+    cin >> N;
+
+    vector<vector<int>> board(N, vector<int>(N, 0));
+
+    int row, col;
+    cout << "Enter the position of the first queen (row and column, 0-indexed): ";
+    cin >> row >> col;
+
+    if (row < 0 || row >= N || col < 0 || col >= N) {
+        cout << "Invalid position!" << endl;
+        return 0;
+    }
+
+    // Place first queen
+    board[row][col] = 1;
+
+    // ✅ Start solving from the NEXT row after the first queen
+    if (!solveNQ(board, row + 1, N)) {
+        cout << "Solution does not exist." << endl;
+    } else {
+        cout << "\nFinal N-Queens Matrix:\n";
+        printSolution(board, N);
+    }
+
+    cout << "\nTime Complexity: O(N!)";
+    cout << "\nSpace Complexity: O(N^2)" << endl;
+
+    return 0;
+}
