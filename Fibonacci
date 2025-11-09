@@ -1,0 +1,46 @@
+#include <iostream>
+using namespace std;
+
+// Recursive implementation
+long long fibonacciRecursive(int n) {
+    if (n <= 1)
+        return n;
+    return fibonacciRecursive(n - 1) + fibonacciRecursive(n - 2);
+}
+
+// Non-recursive (iterative) implementation
+long long fibonacciNonRecursive(int n) {
+    if (n <= 1)
+        return n;
+
+    long long a = 0, b = 1, c;
+    for (int i = 2; i <= n; i++) {
+        c = a + b;
+        a = b;
+        b = c;
+    }
+    return b;
+}
+
+int main() {
+    int n;
+    cout << "Enter n: ";
+    cin >> n;
+
+    if (n < 0) {
+        cout << "Fibonacci number is not defined for negative input.";
+        return 0;
+    }
+
+    cout << "\nIterative (Non-Recursive) Fibonacci of " << n << " = " << fibonacciNonRecursive(n) << endl;
+    cout << "Recursive Fibonacci of " << n << " = " << fibonacciRecursive(n) << endl;
+
+    cout << "\nTime Complexity:\n";
+    cout << "  Recursive: O(2^n)\n";
+    cout << "  Iterative: O(n)\n";
+    cout << "Space Complexity:\n";
+    cout << "  Recursive: O(n)\n";
+    cout << "  Iterative: O(1)\n";
+
+    return 0;
+}
