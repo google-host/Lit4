@@ -1,0 +1,91 @@
+#include <iostream>
+#include <queue>
+#include <vector>
+#include <string>
+using namespace std;
+
+// Huffman tree node
+struct Node {
+    char ch;
+    int freq;
+    Node *left, *right;
+
+    Node(char c, int f) {
+        ch = c;
+        freq = f;
+        left = right = nullptr;
+    }
+};
+
+// Comparison class for priority queue (min-heap)
+struct Compare {
+    bool operator()(Node* a, Node* b) {
+        return a->freq > b->freq; // smaller freq has higher priority
+    }
+};
+
+// Recursive function to print Huffman codes
+void printCodes(Node* root, string code) {
+    if (root == nullptr)
+        return;
+
+    // If leaf node, print character and code
+    if (!root->left && !root->right) {
+        cout << root->ch << " : " << code << endl;
+        return;
+    }
+
+    // Traverse left and right subtrees
+    printCodes(root->left, code + "0");
+    printCodes(root->right, code + "1");
+}
+
+// Function to build Huffman tree and display codes
+void huffmanEncoding(vector<char>& chars, vector<int>& freq) {
+    priority_queue<Node*, vector<Node*>, Compare> pq;
+
+    // Step 1: Create nodes and push into priority queue
+    for (size_t i = 0; i < chars.size(); i++) {
+        pq.push(new Node(chars[i], freq[i]));
+    }
+
+    // Step 2: Build tree
+    while (pq.size() > 1) {
+        Node* left = pq.top(); pq.pop();
+        Node* right = pq.top(); pq.pop();
+
+        // Internal node with sum of frequencies
+        Node* newNode = new Node('$', left->freq + right->freq);
+        newNode->left = left;
+        newNode->right = right;
+        pq.push(newNode);
+    }
+
+    // Step 3: Print Huffman codes
+    Node* root = pq.top();
+    cout << "\nHuffman Codes:\n";
+    printCodes(root, "");
+}
+
+int main() {
+    int n;
+    cout << "Enter number of characters: ";
+    cin >> n;
+
+    vector<char> chars(n);
+    vector<int> freq(n);
+
+    cout << "Enter characters:\n";
+    for (int i = 0; i < n; i++) {
+        cin >> chars[i];
+    }
+
+    cout << "Enter their frequencies:\n";
+    for (int i = 0; i < n; i++) {
+        cin >> freq[i];
+    }
+
+    huffmanEncoding(chars, freq);
+
+    return 0;
+}
