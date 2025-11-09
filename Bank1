@@ -1,33 +1,26 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-
-contract BankAccount {
-    address public customer;  // owner of the account
-
-    // Constructor: sets account owner at deployment
-    constructor() {
-        customer = msg.sender;
-    }
-
-    // 1️⃣ Deposit Money
-    function deposit() public payable {
-        require(msg.sender == customer, "You are not the account owner!");
-        require(msg.value > 0, "Deposit amount must be greater than zero!");
-        // Ether sent with this transaction is automatically added to contract balance
-    }
-
-    // 2️⃣ Withdraw Money
-    function withdraw(uint256 amount) public {
-        require(msg.sender == customer, "You are not the account owner!");
-        require(amount > 0, "Withdraw amount must be greater than zero!");
-        require(address(this).balance >= amount, "Insufficient balance!");
-
-        payable(customer).transfer(amount);  // send Ether back to owner
-    }
-
-    // 3️⃣ Show Balance
-    function showBalance() public view returns (uint256) {
-        require(msg.sender == customer, "You are not the account owner!");
-        return address(this).balance;  // actual Ether in the contract
-    }
+contract SimpleBank {
+uint256 balance=0;
+address public accOwner;
+constructor() {
+accOwner = msg.sender;
+}
+//Deposit
+function Deposit() public payable {
+require(accOwner==msg.sender,"you are not an account owner");
+require(msg.value>0,"Amount should be greater than 0!");
+balance += msg.value;
+}
+//Withdraw
+function Withdraw() public payable {
+require(accOwner==msg.sender,"you are not an account owner");
+require(msg.value>0,"Amount should be greater than 0!");
+balance -= msg.value;
+}
+//showbalance
+function showbalace () public view returns(uint256) {
+require(accOwner==msg.sender,"you are not an account owner");
+return balance;
+}
 }
